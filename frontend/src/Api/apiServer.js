@@ -2,7 +2,7 @@
 import axios from 'axios';
 
 // Base URL configuration
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api';
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://kuki-yugs.onrender.com/api';
 
 // Create axios instance with default config
 const apiClient = axios.create({
