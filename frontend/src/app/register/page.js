@@ -4,14 +4,36 @@ import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/card"
-
+import { authAPI } from "@/Api/apiServer"
+import { useRouter } from "next/navigation"
 export default function LoginPage() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
+  const [name,setname]=useState("")
+  const router = useRouter()
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async(e) => {
     e.preventDefault()
-    console.log("Login submitted:", { email, password })
+    const payloadData = {
+      username:name,
+      email:email,
+      password:password,
+      role:"user"
+    }
+   try {
+     const response = await authAPI.register(payloadData);
+     console.log(response,"response")
+     if(response.success){
+      localStorage.setItem("userData",JSON.stringify(response.data))
+      router.push("/login")
+     }
+     else{
+
+     }
+   } catch (error) {
+    console.log(error);
+   }
+
     // later: call backend /api/auth/login
   }
 
@@ -23,6 +45,13 @@ export default function LoginPage() {
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
+            <Input
+              type="name"
+              placeholder="Name"
+              value={name}
+              onChange={(e) => setname(e.target.value)}
+              required
+            />
             <Input
               type="email"
               placeholder="Email"

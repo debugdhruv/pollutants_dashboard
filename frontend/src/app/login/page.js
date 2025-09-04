@@ -4,14 +4,33 @@ import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/card"
-
+import { authAPI } from "@/Api/apiServer"
+import { useRouter } from "next/navigation"
 export default function LoginPage() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
-
-  const handleSubmit = (e) => {
+  const router = useRouter()
+  const handleSubmit = async(e) => {
     e.preventDefault()
-    console.log("Login submitted:", { email, password })
+    const payloadData = {
+      email:email,
+      password:password
+    }
+   try {
+     const response = await authAPI.login(payloadData);
+     console.log(response,"response")
+     if(response.success){
+      console.log("yyysysysys");
+      localStorage.setItem("userData",JSON.stringify(response.data))
+      router.push("/")
+     }
+     else{
+
+     }
+   } catch (error) {
+    console.log(error);
+   }
+
     // later: call backend /api/auth/login
   }
 

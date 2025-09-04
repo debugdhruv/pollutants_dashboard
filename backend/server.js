@@ -2,15 +2,18 @@
 const express = require('express');
 const path = require('path');
 require('dotenv').config();
+const cors =require("cors")
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
 
 const dbConect = require("./config/dbconnection")
 
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cors({origin:"*"}))
 
 // Import routes
 const indexRoutes = require('./Routes');
