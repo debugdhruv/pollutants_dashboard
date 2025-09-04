@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/dialog"
 // import { toast } from "@/components/ui/use-toast"
 import { openGDSAPI } from "@/Api/apiServer"
-import { Loader2, LogOut, RefreshCw } from "lucide-react"
+import { Loader2, LogIn, LogOut, RefreshCw } from "lucide-react"
 import { normalizeRecords, getFieldValue, prepareForAPI } from "@/components/dashboard/dataNormalizer"
 import { useRouter } from "next/navigation"
 
@@ -42,9 +42,9 @@ export default function DashboardPage() {
   const [formData, setFormData] = useState(initialFormData)
   const [editId, setEditId] = useState(null)
   const [loading, setLoading] = useState(false)
-  const [pageLoading, setPageLoading] = useState(true)
+  const [pageLoading, setPageLoading] = useState(false)
   const [statistics, setStatistics] = useState(null)
-  const router =useRouter()
+  const router = useRouter()
   const [pagination, setPagination] = useState({
     current_page: 1,
     total_pages: 1,
@@ -52,24 +52,43 @@ export default function DashboardPage() {
     records_per_page: 10
   })
 
+  const [login, setlogin] = useState(false);
+
+  const isuserlogin = () => {
+    const data = localStorage.getItem("userData");
+    if (data) {
+      setlogin(true)
+          fetchRecords()
+    fetchStatistics()
+    }
+    else {
+      setlogin(false)
+    }
+  }
+
+  useEffect(() => {
+    isuserlogin()
+  }, [])
+
   // Fetch all records from API
   const fetchRecords = async (filters = {}, page = 1, limit = 10) => {
-    setPageLoading(true)
+ 
+ setPageLoading(true)
     try {
       const params = {
         page,
         limit,
         ...filters
       }
-      
+
       const response = await openGDSAPI.getRecords(params)
-      
+
       if (response.success) {
         const normalizedRecords = normalizeRecords(response.data.records)
-setRecords(normalizedRecords)
-setFilteredRecords(normalizedRecords)
+        setRecords(normalizedRecords)
+        setFilteredRecords(normalizedRecords)
         setPagination(response.data.pagination)
-        
+
         // toast({
         //   title: "Success",
         //   description: `Loaded ${response.data.records.length} records`,
@@ -88,15 +107,26 @@ setFilteredRecords(normalizedRecords)
     } finally {
       setPageLoading(false)
     }
+    
+    // else{
+    //     setRecords([])
+    //     setFilteredRecords([])
+    //     setPagination([])
+    // }
+   
   }
 
   // Fetch statistics
   const fetchStatistics = async () => {
     try {
-      const response = await openGDSAPI.getStatistics()
+
+  const response = await openGDSAPI.getStatistics()
       if (response.success) {
         setStatistics(response.data)
       }
+      
+      
+    
     } catch (error) {
       console.error("Failed to fetch statistics:", error)
     }
@@ -152,12 +182,12 @@ setFilteredRecords(normalizedRecords)
     setLoading(true)
     try {
       const response = await openGDSAPI.deleteRecord(id)
-      
+
       if (response.success) {
         // Refresh the records list
         await fetchRecords()
         await fetchStatistics() // Update statistics
-        
+
         // toast({
         //   title: "Success",
         //   description: "Record deleted successfully",
@@ -177,10 +207,10 @@ setFilteredRecords(normalizedRecords)
 
   const validateForm = () => {
     const errors = []
-    
+
     if (!formData.city.trim()) errors.push("City is required")
     if (!formData.monthYear.trim()) errors.push("Month-Year is required")
-    
+
     // Validate month-year format
     const monthYearRegex = /^(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)-\d{2}$/
     if (formData.monthYear && !monthYearRegex.test(formData.monthYear)) {
@@ -254,20 +284,20 @@ setFilteredRecords(normalizedRecords)
         //   title: "Success",
         //   description: "Record created successfully",
         // })
-            setLoading(false)
+        setLoading(false)
       }
       if (response.success) {
         // Refresh the records list and statistics
         await fetchRecords()
         await fetchStatistics()
-        
+
         setOpen(false)
         setFormData(initialFormData)
         setEditId(null)
         setIsEditing(false)
       }
 
-      
+
     } catch (error) {
       console.error("Save error:", error)
       // toast.error(error.message || "Failed to save record")
@@ -286,7 +316,7 @@ setFilteredRecords(normalizedRecords)
         avgRH: statistics.overall.avgRH?.toFixed(1) || '0.0'
       }
     }
-    
+
     // Fallback to local calculation using normalized data
     return {
       totalRecords: pagination.total_records || records.length,
@@ -309,7 +339,7 @@ setFilteredRecords(normalizedRecords)
     )
   }
 
-  const logout =()=>{
+  const logout = () => {
     localStorage.removeItem("userData")
     router.push("/login")
   }
@@ -319,8 +349,8 @@ setFilteredRecords(normalizedRecords)
       <div className="max-w-7xl mx-auto">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-3xl font-bold text-gray-900">OpenGDS Environment Dashboard</h1>
-          <Button 
-            onClick={() => {fetchRecords(); fetchStatistics()}} 
+          <Button
+            onClick={() => { fetchRecords(); fetchStatistics() }}
             variant="outline"
             className="flex items-center gap-2"
           >
@@ -329,16 +359,28 @@ setFilteredRecords(normalizedRecords)
           </Button>
 
 
-          <Button 
-            onClick={() =>logout()} 
+          <Button
+            onClick={() => logout()}
             variant="outline"
             className="flex items-center gap-2"
           >
-            <LogOut className="h-4 w-4" />
-           Logout
+            {
+              login ? (
+                <>
+                  <LogOut className="h-4 w-4" />
+                  Logout
+                </>
+              ) : (
+                <>
+                  <LogIn className="h-4 w-4" />
+                  LogIn
+                </>
+              )
+            }
+
           </Button>
         </div>
-        
+
         {/* Statistics Cards */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
           <Card>
@@ -388,13 +430,13 @@ setFilteredRecords(normalizedRecords)
             </Button>
           </CardHeader>
           <CardContent>
-            <DataTable 
-              data={filteredRecords} 
-              onEdit={handleEdit} 
+            <DataTable
+              data={filteredRecords}
+              onEdit={handleEdit}
               onDelete={handleDelete}
               loading={loading}
             />
-            
+
             {/* Pagination */}
             {pagination.total_pages > 1 && (
               <div className="flex items-center justify-between mt-4">
@@ -447,16 +489,16 @@ setFilteredRecords(normalizedRecords)
                 {isEditing ? "Edit Environmental Record" : "Add New Environmental Record"}
               </DialogTitle>
             </DialogHeader>
-            
-            <RecordForm 
-              formData={formData} 
+
+            <RecordForm
+              formData={formData}
               setFormData={setFormData}
               isEditing={isEditing}
             />
-            
+
             <DialogFooter className="gap-2">
-              <Button 
-                variant="outline" 
+              <Button
+                variant="outline"
                 onClick={() => {
                   setOpen(false)
                   setFormData(initialFormData)
@@ -467,7 +509,7 @@ setFilteredRecords(normalizedRecords)
               >
                 Cancel
               </Button>
-              <Button 
+              <Button
                 onClick={handleSave}
                 // disabled={loading}
                 className="bg-blue-600 hover:bg-blue-700"
