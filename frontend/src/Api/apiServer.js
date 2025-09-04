@@ -131,9 +131,9 @@ export async function apiReq(
         clearUserData();
         
         // Redirect to login page in browser
-        if (typeof window !== 'undefined') {
-          window.location.href = '/auth/login';
-        }
+        // if (typeof window !== 'undefined') {
+        //   window.location.href = '/auth/login';
+        // }
         
         return reject({
           success: false,
