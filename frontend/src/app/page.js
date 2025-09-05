@@ -16,7 +16,6 @@ import { Loader2, LogIn, LogOut, RefreshCw } from "lucide-react"
 import { normalizeRecords, getFieldValue, prepareForAPI } from "@/components/dashboard/dataNormalizer"
 import { useRouter } from "next/navigation"
 
-// Initial empty form data based on OpenGDS schema
 const initialFormData = {
   city: "",
   monthYear: "",
@@ -348,69 +347,68 @@ export default function DashboardPage() {
     <div className="min-h-screen bg-gray-50 p-6">
       <div className="max-w-7xl mx-auto">
         <div className="flex justify-between items-center mb-6">
-          <h1 className="text-3xl font-bold text-gray-900">OpenGDS Environment Dashboard</h1>
-          <Button
-            onClick={() => { fetchRecords(); fetchStatistics() }}
-            variant="outline"
-            className="flex items-center gap-2"
-          >
-            <RefreshCw className="h-4 w-4" />
-            Refresh Data
-          </Button>
+          <h1 className="text-3xl font-bold text-gray-900">Environment Pollutants Dashboard</h1>
+          <div className="flex items-center gap-3 ml-auto">
+  <Button
+    onClick={() => { fetchRecords(); fetchStatistics() }}
+    variant="outline"
+    className="flex items-center gap-2"
+  >
+    <RefreshCw className="h-4 w-4" />
+    Refresh Data
+  </Button>
 
-
-          <Button
-            onClick={() => logout()}
-            variant="outline"
-            className="flex items-center gap-2"
-          >
-            {
-              login ? (
-                <>
-                  <LogOut className="h-4 w-4" />
-                  Logout
-                </>
-              ) : (
-                <>
-                  <LogIn className="h-4 w-4" />
-                  LogIn
-                </>
-              )
-            }
-
-          </Button>
+  <Button
+    onClick={() => logout()}
+    variant="outline"
+    className="flex items-center gap-2"
+  >
+    {
+      login ? (
+        <>
+          <LogOut className="h-4 w-4" />
+          Logout
+        </>
+      ) : (
+        <>
+          <LogIn className="h-4 w-4" />
+          LogIn
+        </>
+      )
+    }
+  </Button>
+</div>
         </div>
 
-        {/* Statistics Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
-          <Card>
-            <CardContent className="p-6">
-              <div className="text-2xl font-bold">{displayStats.totalRecords}</div>
-              <p className="text-sm text-gray-600">Total Records</p>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="p-6">
-              <div className="text-2xl font-bold">{displayStats.totalCities}</div>
-              <p className="text-sm text-gray-600">Cities</p>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="p-6">
-              <div className="text-2xl font-bold">{displayStats.avgTemp}°C</div>
-              <p className="text-sm text-gray-600">Avg Temperature</p>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="p-6">
-              <div className="text-2xl font-bold">{displayStats.avgRH}%</div>
-              <p className="text-sm text-gray-600">Avg Humidity</p>
-            </CardContent>
-          </Card>
-        </div>
-
+       {/* Statistics Cards */}
+<div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+  <Card>
+    <CardContent className="px-4">
+      <div className="text-xl font-bold">{displayStats.totalRecords}</div>
+      <p className="text-xs text-gray-600">Total Records</p>
+    </CardContent>
+  </Card>
+  <Card>
+    <CardContent className="px-4">
+      <div className="text-xl font-bold">{displayStats.totalCities}</div>
+      <p className="text-xs text-gray-600">Cities</p>
+    </CardContent>
+  </Card>
+  <Card>
+    <CardContent className="px-4">
+      <div className="text-xl font-bold">{displayStats.avgTemp}°C</div>
+      <p className="text-xs text-gray-600">Avg Temperature</p>
+    </CardContent>
+  </Card>
+  <Card>
+    <CardContent className="px-4">
+      <div className="text-xl font-bold">{displayStats.avgRH}%</div>
+      <p className="text-xs text-gray-600">Avg Humidity</p>
+    </CardContent>
+  </Card>
+</div>
         {/* Filters */}
-        <Card className="mb-6">
+        <Card className="mt-6 mb-6">
           <CardHeader>
             <CardTitle className="text-xl font-semibold">Filters</CardTitle>
           </CardHeader>
@@ -418,6 +416,16 @@ export default function DashboardPage() {
             <Filters onFilter={handleFilter} />
           </CardContent>
         </Card>
+        {/* Trends Chart */}
+        <Card className="mb-6">
+          <CardHeader>
+            <CardTitle className="text-xl font-semibold">Environmental Trends</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <TrendChart data={filteredRecords} />
+          </CardContent>
+        </Card>
+
 
         {/* Data Table */}
         <Card className="mb-6">
@@ -471,15 +479,7 @@ export default function DashboardPage() {
           </CardContent>
         </Card>
 
-        {/* Trends Chart */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-xl font-semibold">Environmental Trends</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <TrendChart data={filteredRecords} />
-          </CardContent>
-        </Card>
+        
 
         {/* Add/Edit Modal */}
         <Dialog open={open} onOpenChange={setOpen}>

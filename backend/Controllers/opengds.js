@@ -1,4 +1,3 @@
-// controllers/openGDSController.js
 const  OpenGDS  = require('../Models/openGdsModel');
 
 

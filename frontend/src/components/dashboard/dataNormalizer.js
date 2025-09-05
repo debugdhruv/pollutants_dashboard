@@ -1,8 +1,4 @@
-// components/dashboard/dataNormalizer.js
-
-// Field mapping from CSV fields to schema fields
 const fieldMapping = {
-  // CSV field names -> Schema field names
   'City': 'city',
   'Month - Year': 'monthYear',
   'NO (µg/m3)': 'no',
@@ -21,7 +17,6 @@ const fieldMapping = {
 
 // Normalize a single record to match schema
 export function normalizeRecord(record) {
-  // If record already has normalized fields, return as is
   if (record.city && record.monthYear) {
     return record
   }
@@ -45,7 +40,6 @@ export function normalizeRecord(record) {
   return normalized
 }
 
-// Normalize array of records
 export function normalizeRecords(records) {
   console.log('Normalizing records:', records.length)
   const normalized = records.map(record => normalizeRecord(record))
@@ -53,7 +47,6 @@ export function normalizeRecords(records) {
   return normalized
 }
 
-// Get display value for a field (handles both formats)
 export function getFieldValue(record, fieldName) {
   // Try schema field first
   if (record[fieldName] !== undefined && record[fieldName] !== null) {
@@ -97,7 +90,6 @@ export function prepareForAPI(record) {
   }
 }
 
-// Debug function to see what fields a record has
 export function debugRecord(record) {
   console.log('Record fields:', Object.keys(record))
   console.log('Has city field:', record.city !== undefined)

@@ -1,9 +1,7 @@
-// controllers/openGDSController.js
 const { OpenGDS } = require('../models');
 
 // Field mapping from frontend schema to both possible database field formats
 const fieldMapping = {
-  // Schema fields -> [schema_field, csv_field]
   'city': ['city', 'City'],
   'monthYear': ['monthYear', 'Month - Year'],
   'no': ['no', 'NO (µg/m3)'],
@@ -20,14 +18,13 @@ const fieldMapping = {
   'rg': ['rg', 'RG (mm)']
 };
 
-// Helper function to build query that works with both field formats
 const buildQuery = (queryParams) => {
   const query = {};
   
   // Handle different operators
   Object.keys(queryParams).forEach(key => {
     if (key.startsWith('_') || ['page', 'limit', 'sort', 'fields', 'search'].includes(key)) {
-      return; // Skip pagination and system parameters
+      return; 
     }
     
     const value = queryParams[key];
@@ -84,7 +81,6 @@ const buildQuery = (queryParams) => {
   return query;
 };
 
-// Helper function to handle advanced filtering
 const buildAdvancedQuery = (req) => {
   let query = {};
   
@@ -189,10 +185,9 @@ const buildAdvancedQuery = (req) => {
   return query;
 };
 
-// Update the main controller function
 const getOpenGDSRecords = async (req, res) => {
   try {
-    // Build query that handles both field formats
+    // query that handles both field formats
     const query = buildAdvancedQuery(req);
     
     console.log('Generated MongoDB Query:', JSON.stringify(query, null, 2));
@@ -202,7 +197,7 @@ const getOpenGDSRecords = async (req, res) => {
     const limit = parseInt(req.query.limit) || 10;
     const skip = (page - 1) * limit;
     
-    // Sorting - handle both field formats
+    // Sorting
     let sort = {};
     if (req.query.sort) {
       const sortFields = req.query.sort.split(',');
@@ -229,7 +224,7 @@ const getOpenGDSRecords = async (req, res) => {
         }
       });
     } else {
-      sort = { createdAt: -1 }; // Default sort by newest first
+      sort = { createdAt: -1 }; 
     }
     
     // Field selection
@@ -249,7 +244,7 @@ const getOpenGDSRecords = async (req, res) => {
     // Get total count for pagination
     const total = await OpenGDS.countDocuments(query);
     
-    // Calculate pagination info
+    // xalculate pagination infO
     const totalPages = Math.ceil(total / limit);
     const hasNextPage = page < totalPages;
     const hasPrevPage = page > 1;
@@ -285,5 +280,4 @@ const getOpenGDSRecords = async (req, res) => {
 
 module.exports = {
   getOpenGDSRecords,
-  // ... other controller functions remain the same
 };

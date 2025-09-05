@@ -4,7 +4,7 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Responsi
 import { getFieldValue } from "./dataNormalizer"
 
 export function TrendChart({ data }) {
-  // Transform data for chart - combine monthYear and sort chronologically
+  // combine monthYear and sort chronologically
   const chartData = data
     .map(record => ({
       monthYear: getFieldValue(record, 'monthYear'),
@@ -17,23 +17,25 @@ export function TrendChart({ data }) {
       rh: getFieldValue(record, 'rh'),
       ws: getFieldValue(record, 'ws')
     }))
-    .filter(record => record.monthYear) // Remove records without monthYear
+    // Remove records without monthYear
+    .filter(record => record.monthYear)
+
     .sort((a, b) => {
       // Sort by month-year chronologically
       const [monthA, yearA] = a.monthYear.split('-')
       const [monthB, yearB] = b.monthYear.split('-')
-      
-      const monthOrder = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 
-                         'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-      
+
+      const monthOrder = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+        'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+
       if (yearA !== yearB) {
         return parseInt(yearA) - parseInt(yearB)
       }
-      
+
       return monthOrder.indexOf(monthA) - monthOrder.indexOf(monthB)
     })
 
-  // Custom tooltip to show all relevant data
+  // xustom tooltip to show all relevant data
   const CustomTooltip = ({ active, payload, label }) => {
     if (active && payload && payload.length) {
       const data = payload[0].payload
@@ -68,47 +70,47 @@ export function TrendChart({ data }) {
         <ResponsiveContainer width="100%" height={300}>
           <LineChart data={chartData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
             <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-            <XAxis 
-              dataKey="monthYear" 
+            <XAxis
+              dataKey="monthYear"
               tick={{ fontSize: 12 }}
               angle={-45}
               textAnchor="end"
               height={60}
             />
-            <YAxis 
+            <YAxis
               label={{ value: 'Concentration (μg/m³)', angle: -90, position: 'insideLeft' }}
               tick={{ fontSize: 12 }}
             />
             <Tooltip content={<CustomTooltip />} />
             <Legend />
-            <Line 
-              type="monotone" 
-              dataKey="benzene" 
-              stroke="#8884d8" 
+            <Line
+              type="monotone"
+              dataKey="benzene"
+              stroke="#8884d8"
               strokeWidth={2}
               dot={{ r: 4 }}
               name="Benzene (μg/m³)"
             />
-            <Line 
-              type="monotone" 
-              dataKey="toluene" 
-              stroke="#82ca9d" 
+            <Line
+              type="monotone"
+              dataKey="toluene"
+              stroke="#82ca9d"
               strokeWidth={2}
               dot={{ r: 4 }}
               name="Toluene (μg/m³)"
             />
-            <Line 
-              type="monotone" 
-              dataKey="no" 
-              stroke="#ff7300" 
+            <Line
+              type="monotone"
+              dataKey="no"
+              stroke="#ff7300"
               strokeWidth={2}
               dot={{ r: 4 }}
               name="NO (μg/m³)"
             />
-            <Line 
-              type="monotone" 
-              dataKey="nox" 
-              stroke="#ff0080" 
+            <Line
+              type="monotone"
+              dataKey="nox"
+              stroke="#ff0080"
               strokeWidth={2}
               dot={{ r: 4 }}
               name="NOX (ppb)"
@@ -123,31 +125,31 @@ export function TrendChart({ data }) {
         <ResponsiveContainer width="100%" height={300}>
           <LineChart data={chartData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
             <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-            <XAxis 
-              dataKey="monthYear" 
+            <XAxis
+              dataKey="monthYear"
               tick={{ fontSize: 12 }}
               angle={-45}
               textAnchor="end"
               height={60}
             />
-            <YAxis 
+            <YAxis
               label={{ value: 'Value', angle: -90, position: 'insideLeft' }}
               tick={{ fontSize: 12 }}
             />
             <Tooltip content={<CustomTooltip />} />
             <Legend />
-            <Line 
-              type="monotone" 
-              dataKey="temp" 
-              stroke="#ff4444" 
+            <Line
+              type="monotone"
+              dataKey="temp"
+              stroke="#ff4444"
               strokeWidth={2}
               dot={{ r: 4 }}
               name="Temperature (°C)"
             />
-            <Line 
-              type="monotone" 
-              dataKey="rh" 
-              stroke="#4444ff" 
+            <Line
+              type="monotone"
+              dataKey="rh"
+              stroke="#4444ff"
               strokeWidth={2}
               dot={{ r: 4 }}
               name="Humidity (%)"

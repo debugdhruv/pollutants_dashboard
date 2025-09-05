@@ -1,5 +1,3 @@
-// middleware/openGDSValidation.js
-
 // Validate OpenGDS record creation
 const validateOpenGDSCreate = (req, res, next) => {
   const {

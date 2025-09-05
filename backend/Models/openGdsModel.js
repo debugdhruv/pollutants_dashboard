@@ -1,4 +1,3 @@
-// models/OpenGDS.js
 const mongoose = require('mongoose');
 
 const openGDSSchema = new mongoose.Schema({

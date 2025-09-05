@@ -1,7 +1,6 @@
-// components/dashboard/recordForm.jsx
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+// import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
 export function RecordForm({ formData, setFormData, isEditing }) {
   const handleInputChange = (field, value) => {
@@ -11,13 +10,13 @@ export function RecordForm({ formData, setFormData, isEditing }) {
     }))
   }
 
-  // Month options for dropdown
+  // month options for dropdown
   const months = [
     "Jan", "Feb", "Mar", "Apr", "May", "Jun",
     "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
   ]
 
-  // Year options (last 10 years)
+  // year options
   const years = Array.from({ length: 10 }, (_, i) => {
     const year = new Date().getFullYear() - i
     return year.toString().slice(-2) // Get last 2 digits

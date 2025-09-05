@@ -50,7 +50,7 @@ export function Filters({ onFilter }) {
     "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
   ]
 
-  // Year options (last 10 years)
+  // Year options 
   const years = Array.from({ length: 10 }, (_, i) => {
     const year = new Date().getFullYear() - i
     return year.toString().slice(-2) // Get last 2 digits

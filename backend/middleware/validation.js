@@ -1,5 +1,3 @@
-// middleware/validation.js
-
 // Validate registration input
 const validateRegister = (req, res, next) => {
   const { username, email, password } = req.body;
